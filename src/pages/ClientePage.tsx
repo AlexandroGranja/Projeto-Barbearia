@@ -50,7 +50,7 @@ export default function ClientePage() {
   const fetchQueue = async () => {
     try {
       const { data, error } = await supabase
-        .from("queue_items")
+        .from('queue_items')
         .select(`
           *,
           haircut_types (
@@ -58,31 +58,33 @@ export default function ClientePage() {
             price
           )
         `)
-        .eq("status", "waiting")
-        .order("position", { ascending: true });
+        .eq('status', 'waiting')
+        .order('position', { ascending: true });
 
       if (error) throw error;
       setQueue(data || []);
     } catch (error) {
-      console.error("Erro ao buscar fila:", error);
+      console.error('Erro ao buscar fila:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
   const fetchHaircutTypes = async () => {
     try {
       const { data, error } = await supabase
-        .from("haircut_types")
-        .select("*")
-        .eq("active", true)
-        .order("name");
+        .from('haircut_types')
+        .select('*')
+        .eq('active', true)
+        .order('name');
 
       if (error) throw error;
       setHaircutTypes(data || []);
     } catch (error) {
-      console.error("Erro ao buscar tipos de corte:", error);
+      console.error('Erro ao buscar tipos de corte:', error);
     }
   };
-
+  
   const addToQueue = async () => {
     if (!clientName.trim() || !selectedService) {
       toast({
@@ -91,6 +93,7 @@ export default function ClientePage() {
         variant: "destructive",
       });
       return;
+      
     }
 
     try {
@@ -99,40 +102,24 @@ export default function ClientePage() {
 
       // Get next position
       const { data: lastItem } = await supabase
-        .from("queue_items")
-        .select("position")
-        .order("position", { ascending: false })
+        .from('queue_items')
+        .select('position')
+        .order('position', { ascending: false })
         .limit(1);
 
       const nextPosition = lastItem && lastItem.length > 0 ? lastItem[0].position + 1 : 1;
 
-      // --- Adicione estes console.log AQUI --- //
-      console.log("Dados a serem inseridos na fila:", {
-        client_name: clientName.trim(),
-        haircut_type_id: selectedService,
-        price: selectedHaircut.price,
-        position: nextPosition,
-        status: "waiting"
-      });
-      console.log("Tentando inserir na tabela queue_items...");
-      // --- Fim dos console.log --- //
-
       const { error } = await supabase
-        .from("queue_items")
+        .from('queue_items')
         .insert({
           client_name: clientName.trim(),
           haircut_type_id: selectedService,
           price: selectedHaircut.price,
           position: nextPosition,
-          status: "waiting"
+          status: 'waiting'
         });
 
-      if (error) {
-        // --- Adicione este console.log AQUI --- //
-        console.error("Erro detalhado do Supabase ao adicionar à fila:", error);
-        // --- Fim do console.log --- //
-        throw error;
-      }
+      if (error) throw error;
 
       toast({
         title: "Sucesso!",
@@ -145,7 +132,7 @@ export default function ClientePage() {
       setDialogOpen(false);
       fetchQueue();
     } catch (error) {
-      console.error("Erro ao adicionar à fila (catch):", error);
+      console.error('Erro ao adicionar à fila:', error);
       toast({
         title: "Erro",
         description: "Erro ao adicionar à fila. Tente novamente.",
@@ -274,7 +261,7 @@ export default function ClientePage() {
                           <div>
                             <h4 className="font-semibold">{item.client_name}</h4>
                             <p className="text-sm text-muted-foreground">
-                              {item.haircut_type?.name || "Serviço não especificado"}
+                              {item.haircut_type?.name || 'Serviço não especificado'}
                             </p>
                           </div>
                         </div>
