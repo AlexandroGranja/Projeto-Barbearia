@@ -6,75 +6,53 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
-export type Database = {
-  // Allows to automatically instanciate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "12.2.12 (cd3cf9e)"
-  }
+export interface Database {
   public: {
     Tables: {
-      admins: {
+      queue_items: {
         Row: {
-          created_at: string | null
-          email: string
-          id: string
-          name: string
-          password_hash: string
-          role: string | null
-          updated_at: string | null
-        }
+          id: string;
+          added_at: string | null;
+          client_name: string;
+          client_email: string; // NOVO CAMPO
+          client_phone: string | null; // NOVO CAMPO
+          finished_at: string | null;
+          haircut_type_id: string | null;
+          position: number;
+          price: number;
+          started_at: string | null;
+          status: string | null;
+          observations: string | null; // NOVO CAMPO
+        };
         Insert: {
-          created_at?: string | null
-          email: string
-          id?: string
-          name: string
-          password_hash: string
-          role?: string | null
-          updated_at?: string | null
-        }
+          id?: string;
+          added_at?: string | null;
+          client_name: string;
+          client_email: string; // NOVO CAMPO OBRIGATÓRIO
+          client_phone?: string | null; // NOVO CAMPO OPCIONAL
+          finished_at?: string | null;
+          haircut_type_id?: string | null;
+          position: number;
+          price: number;
+          started_at?: string | null;
+          status?: string | null;
+          observations?: string | null; // NOVO CAMPO OPCIONAL
+        };
         Update: {
-          created_at?: string | null
-          email?: string
-          id?: string
-          name?: string
-          password_hash?: string
-          role?: string | null
-          updated_at?: string | null
-        }
-        Relationships: []
-      }
-      appointments: {
-        Row: {
-          client_name: string
-          created_at: string | null
-          finished_at: string | null
-          haircut_type_id: string | null
-          id: string
-          price: number
-          started_at: string | null
-          status: string | null
-        }
-        Insert: {
-          client_name: string
-          created_at?: string | null
-          finished_at?: string | null
-          haircut_type_id?: string | null
-          id?: string
-          price: number
-          started_at?: string | null
-          status?: string | null
-        }
-        Update: {
-          client_name?: string
-          created_at?: string | null
-          finished_at?: string | null
-          haircut_type_id?: string | null
-          id?: string
-          price?: number
-          started_at?: string | null
-          status?: string | null
-        }
+          id?: string;
+          added_at?: string | null;
+          client_name?: string;
+          client_email?: string;
+          client_phone?: string | null;
+          finished_at?: string | null;
+          haircut_type_id?: string | null;
+          position?: number;
+          price?: number;
+          started_at?: string | null;
+          status?: string | null;
+          observations?: string | null;
+        };
+      };
         Relationships: [
           {
             foreignKeyName: "appointments_haircut_type_id_fkey"
